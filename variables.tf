@@ -1,15 +1,3 @@
-variable "name" {
-  type        = string
-  default     = null
-  description = "Client VPN name"
-}
-
-variable "description" {
-  type        = string
-  default     = null
-  description = "Client VPN description"
-}
-
 variable "feature_set" {
   type        = string
   default     = "ALL"

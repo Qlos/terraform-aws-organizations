@@ -1,5 +1,5 @@
 
-# terraform-aws-client-vpn
+# terraform-aws-organizations
 
 This project is **100% Open Source**, build and develop by DevOps Team from [Qlos.com](https://qlos.com)
 
