@@ -7,9 +7,9 @@ module "account" {
 
 for_each = {for k, v in var.account : k=> v}
 
-  account_name      = each.value.account_name
-  account_email     = each.value.account_email
-  close_on_deletion = each.value.close_on_deletion
-  role_name         = each.value.role_name
-  tags              = each.value.tags
+  account_name      = try(each.value.account_name, null)
+  account_email     = try(each.value.account_email, null)
+  close_on_deletion = try(each.value.close_on_deletion, false)
+  role_name         = try(each.value.role_name, "OrganizationAccountAccessRole")
+  tags              = try(each.value.tags, null)
 }
