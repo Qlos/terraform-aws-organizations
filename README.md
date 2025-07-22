@@ -5,7 +5,7 @@ This project is **100% Open Source**, build and develop by DevOps Team from [Qlo
 
 ## About
 
-Terraform module to create [AWS Organizations](https://aws.amazon.com/organizations/). AWS Organizations provides features to managed multiple AWS Accounts 
+Terraform module to create [AWS Organizations](https://aws.amazon.com/organizations/). AWS Organizations provides features to managed multiple AWS Accounts
 
 ## License
 
@@ -69,6 +69,8 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | Client VPN name | `string` | `null` | no |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Role defined on account creation to access from management account | `string` | `"OrganizationAccountAccessRole"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
+| <a name="input_aws_service_access_principals"></a> [aws_service_access_principals](#input_aws_service_access_principals) | List of AWS service principals to enable integration with AWS Organizations | `list(string)` | `[]` | no |
+
 
 ### Outputs
 
