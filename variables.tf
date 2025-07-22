@@ -9,3 +9,9 @@ variable "account" {
   default     = {}
   description = "Defined accounts to create"
 }
+
+variable "aws_service_access_principals" {
+  type        = list(string)
+  default     = []
+  description = "List of AWS service principals to enable integration with AWS Organizations"
+}
