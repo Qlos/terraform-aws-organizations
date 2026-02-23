@@ -48,34 +48,79 @@ See [LICENSE](LICENSE) for full details.
 
 ### Modules
 
-No modules.
+| Name | Source | Purpose |
+|------|--------|---------|
+| account | ./modules/account | Create and manage AWS accounts within the organization |
 
 ### Resources
 
 | Name | Type |
 |------|------|
-| [aws_organizations_account.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_account) | resource |
 | [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organization) | resource |
+| [aws_organizations_organizational_unit.level1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
+| [aws_organizations_organizational_unit.level2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
 
 ### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_email"></a> [account\_email](#input\_account\_email) | AWS Account email | `string` | `null` | no |
-| <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS Account name | `string` | `null` | no |
-| <a name="input_close_on_deletion"></a> [close\_on\_deletion](#input\_close\_on\_deletion) | Set if account should be deleted on resource destroy. If set to no account will only removed from organization | `bool` | `false` | no |
-| <a name="input_description"></a> [description](#input\_description) | Client VPN description | `string` | `null` | no |
 | <a name="input_feature_set"></a> [feature\_set](#input\_feature\_set) | Set if Organization is created with CONSOLIDATED\_BILLING or ALL features | `string` | `"ALL"` | no |
-| <a name="input_name"></a> [name](#input\_name) | Client VPN name | `string` | `null` | no |
-| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Role defined on account creation to access from management account | `string` | `"OrganizationAccountAccessRole"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
-| <a name="input_aws_service_access_principals"></a> [aws_service_access_principals](#input_aws_service_access_principals) | List of AWS service principals to enable integration with AWS Organizations | `list(string)` | `[]` | no |
-
+| <a name="input_account"></a> [account](#input\_account) | Defined accounts to create | `any` | `{}` | no |
+| <a name="input_aws_service_access_principals"></a> [aws\_service\_access\_principals](#input\_aws\_service\_access\_principals) | List of AWS service principals to enable integration with AWS Organizations | `list(string)` | `[]` | no |
+| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | Map of Organizational Units to create. Each key is a unique identifier, value contains: name, parent\_key (optional, for nesting), tags (optional) | `any` | `{}` | no |
 
 ### Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| organizational\_units\_level1 | Level 1 Organizational Units (directly under root) |
+| organizational\_units\_level2 | Level 2 Organizational Units (nested under level 1) |
 
 ### Examples
 
+```hcl
+module "organization" {
+  source = "github.com/Qlos/terraform-aws-organizations"
 
+  feature_set = "ALL"
+
+  aws_service_access_principals = [
+    "sso.amazonaws.com",
+  ]
+
+  organizational_units = {
+    "security" = {
+      name = "Security"
+    }
+    "workloads" = {
+      name = "Workloads"
+    }
+    "workloads-prod" = {
+      name       = "prod"
+      parent_key = "workloads"
+    }
+    "workloads-dev" = {
+      name       = "dev"
+      parent_key = "workloads"
+    }
+  }
+
+  account = [
+    {
+      account_name  = "audit"
+      account_email = "audit@example.com"
+      parent_id     = "security"
+    },
+    {
+      account_name  = "production"
+      account_email = "prod@example.com"
+      parent_id     = "workloads-prod"
+    },
+    {
+      account_name  = "development"
+      account_email = "dev@example.com"
+      parent_id     = "workloads-dev"
+    },
+  ]
+}
+```
