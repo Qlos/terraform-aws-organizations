@@ -1,12 +1,13 @@
 resource "aws_organizations_account" "this" {
-  name = var.account_name
-  email = var.account_email
+  name              = var.account_name
+  email             = var.account_email
   close_on_deletion = var.close_on_deletion
-  role_name = var.role_name
-  tags = var.tags
+  role_name         = var.role_name
+  parent_id         = var.parent_id
+  tags              = var.tags
 
   lifecycle {
-    ignore_changes = [ role_name ]
+    ignore_changes = [role_name]
   }
 }
 
