@@ -21,3 +21,9 @@ variable "organizational_units" {
   default     = {}
   description = "Map of Organizational Units to create. Each key is a unique identifier, value contains: name, parent_key (optional, for nesting), tags (optional)"
 }
+
+variable "enabled_policy_types" {
+  type        = list(string)
+  default     = []
+  description = "List of Organizations policy types to enable in the Organization Root. Valid values: SERVICE_CONTROL_POLICY, TAG_POLICY, BACKUP_POLICY, AISERVICES_OPT_OUT_POLICY"
+}

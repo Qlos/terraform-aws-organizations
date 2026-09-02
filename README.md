@@ -68,6 +68,7 @@ See [LICENSE](LICENSE) for full details.
 | <a name="input_account"></a> [account](#input\_account) | Defined accounts to create | `any` | `{}` | no |
 | <a name="input_aws_service_access_principals"></a> [aws\_service\_access\_principals](#input\_aws\_service\_access\_principals) | List of AWS service principals to enable integration with AWS Organizations | `list(string)` | `[]` | no |
 | <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | Map of Organizational Units to create. Each key is a unique identifier, value contains: name, parent\_key (optional, for nesting), tags (optional) | `any` | `{}` | no |
+| <a name="input_enabled_policy_types"></a> [enabled\_policy\_types](#input\_enabled\_policy\_types) | List of Organizations policy types to enable in the Organization Root. Valid values: SERVICE\_CONTROL\_POLICY, TAG\_POLICY, BACKUP\_POLICY, AISERVICES\_OPT\_OUT\_POLICY | `list(string)` | `[]` | no |
 
 ### Outputs
 
@@ -75,6 +76,8 @@ See [LICENSE](LICENSE) for full details.
 |------|-------------|
 | organizational\_units\_level1 | Level 1 Organizational Units (directly under root) |
 | organizational\_units\_level2 | Level 2 Organizational Units (nested under level 1) |
+| accounts | Created AWS accounts, keyed the same as var.account |
+| account\_ids | Map of account key to AWS Account ID |
 
 ### Examples
 
@@ -86,6 +89,10 @@ module "organization" {
 
   aws_service_access_principals = [
     "sso.amazonaws.com",
+  ]
+
+  enabled_policy_types = [
+    "SERVICE_CONTROL_POLICY",
   ]
 
   organizational_units = {
@@ -105,22 +112,28 @@ module "organization" {
     }
   }
 
-  account = [
-    {
+  account = {
+    "audit" = {
       account_name  = "audit"
       account_email = "audit@example.com"
       parent_id     = "security"
-    },
-    {
+    }
+    "production" = {
       account_name  = "production"
       account_email = "prod@example.com"
       parent_id     = "workloads-prod"
-    },
-    {
+    }
+    "development" = {
       account_name  = "development"
       account_email = "dev@example.com"
       parent_id     = "workloads-dev"
-    },
-  ]
+    }
+  }
 }
 ```
+
+> **Note**
+> Always pass `account` as a **map**, never as a list. The module keys accounts with
+> `for k, v in var.account`, so a list produces positional keys (`module.account["0"]`).
+> Adding, removing or reordering entries then shifts those keys and Terraform destroys
+> and recreates the accounts, which yields **new AWS Account IDs**.
