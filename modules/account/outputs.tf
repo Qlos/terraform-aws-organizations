@@ -18,7 +18,7 @@ output "email" {
   description = "Email address of the AWS Account root user"
 }
 
-output "status" {
-  value       = aws_organizations_account.this.status
-  description = "Status of the AWS Account in the organization"
+output "state" {
+  value       = aws_organizations_account.this.state
+  description = "State of the AWS Account in the organization (ACTIVE, SUSPENDED, PENDING_CLOSURE)"
 }
